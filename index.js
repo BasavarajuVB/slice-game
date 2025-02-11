@@ -1,11 +1,27 @@
 // Import Realtime Database functions
 import { ref, runTransaction } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-database.js";
 
-// ------------------------------
-// Game Code (Realtime Database version)
-// ------------------------------
+/* =====================================================
+   User Identification
+   =====================================================
+   This code checks for a unique user ID in localStorage.
+   If none is found, it creates one (a random string) and stores it.
+   Later, all game scores for this user are stored in Firebase
+   under "gameScores/{playerId}".
+===================================================== */
+let playerId = localStorage.getItem('playerId');
+if (!playerId) {
+  // Generate a unique user id using a random string and timestamp
+  playerId = 'user_' + Math.random().toString(36).substring(2, 15) + Date.now();
+  localStorage.setItem('playerId', playerId);
+}
+console.log("Player ID:", playerId);
 
-// Global flag to disable slicing during effects
+/* =====================================================
+   Global Variables & Realtime Database Game Code
+===================================================== */
+
+// Global flag to disable slicing during special effects
 let effectActive = false;
 
 // Dynamically add shake animation styles (used for bomb effect)
@@ -68,9 +84,9 @@ function resizeCanvas() {
 resizeCanvas();
 window.addEventListener('resize', resizeCanvas);
 
-/* ------------------------------
-// Class Definitions
------------------------------- */
+/* =====================================================
+   Class Definitions
+===================================================== */
 class ScorePopup {
   constructor(x, y, text, color) {
     this.x = x;
@@ -162,7 +178,7 @@ class SlicedFruitParticle {
 
 class Fruit {
   constructor() {
-    this.size = 220;
+    this.size = 140;
     this.sliceRadius = 30;
     this.resetPosition();
     this.emoji = this.getRandomEmoji();
@@ -280,46 +296,46 @@ class Fruit {
   }
 }
 
-/* ------------------------------
-// Timer & Special Effects Functions
------------------------------- */
+/* =====================================================
+   Timer & Special Effects Functions
+===================================================== */
 function iceEffect() {
   if (isTimerPaused) return;
-  effectActive = true;  // Disable slicing while effect is active
+  //effectActive = true;  // Disable slicing during ice effect
   isTimerPaused = true;
   clearInterval(timerInterval);
   
-  // Apply a smooth glow transition to score displays
+  // Apply a smooth glowing effect to the score displays
   scoreDisplay.style.transition = "box-shadow 0.5s ease";
   highScoreDisplay.style.transition = "box-shadow 0.5s ease";
   scoreDisplay.style.boxShadow = "0 0 20px 10px rgba(0, 191, 255, 0.8)";
   highScoreDisplay.style.boxShadow = "0 0 20px 10px rgba(0, 191, 255, 0.8)";
   
-  // Change the background color for an icy effect
+  // Change background for an icy effect
   document.body.style.transition = "background-color 0.5s ease";
-  document.body.style.backgroundColor = "#b3e5fc"; // Icy blue color
+  document.body.style.backgroundColor = "#b3e5fc"; // Icy blue
   setTimeout(() => {
-    document.body.style.backgroundColor = "#E0F7FA"; // Revert to original background
+    document.body.style.backgroundColor = "#E0F7FA"; // Revert
   }, 1000);
   
-  // Create a full-screen overlay with the ice message (similar to bomb effect)
-  let iceOverlay = document.createElement('div');
-  iceOverlay.id = 'ice-overlay';
-  iceOverlay.style.position = 'fixed';
-  iceOverlay.style.top = '0';
-  iceOverlay.style.left = '0';
-  iceOverlay.style.width = '100%';
-  iceOverlay.style.height = '100%';
-  iceOverlay.style.backgroundColor = 'rgba(173, 216, 230, 0.5)'; // Icy blue effect
-  iceOverlay.style.zIndex = '9999';
-  iceOverlay.style.display = 'flex';
-  iceOverlay.style.justifyContent = 'center';
-  iceOverlay.style.alignItems = 'center';
-  iceOverlay.style.fontSize = '36px';
-  iceOverlay.style.fontWeight = 'bold';
-  iceOverlay.style.color = '#FF69B4';
-  iceOverlay.innerHTML = '';
-  document.body.appendChild(iceOverlay);
+  // Create a full-screen ice overlay (similar to bomb effect)
+      const iceOverlay = document.createElement('div');
+    iceOverlay.id = 'ice-overlay';
+    iceOverlay.style.position = 'fixed';
+    iceOverlay.style.top = '0';
+    iceOverlay.style.left = '0';
+    iceOverlay.style.width = '100%';
+    iceOverlay.style.height = '100%';
+    iceOverlay.style.backgroundColor = 'rgba(135, 206, 235, 0.5)'; // Light sky blue with transparency
+    iceOverlay.style.zIndex = '9999';
+    iceOverlay.style.display = 'flex';
+    iceOverlay.style.justifyContent = 'center';
+    iceOverlay.style.alignItems = 'center';
+    iceOverlay.style.fontSize = '36px';
+    iceOverlay.style.fontWeight = 'bold';
+    iceOverlay.style.color = '#fff';
+    iceOverlay.innerHTML = '❄️ Time Frozen! 🥶';
+    document.body.appendChild(iceOverlay);
   
   // Dim the score and timer displays
   scoreDisplay.style.opacity = '0.7';
@@ -331,14 +347,14 @@ function iceEffect() {
     iceOverlay.style.backgroundColor = 'rgba(173,216,230,0)';
   }, 2000);
   
-  // Remove the ice overlay from the DOM after 1.5 seconds
+  // Remove the ice overlay after 1.5 seconds
   setTimeout(() => {
     if (document.body.contains(iceOverlay)) {
       document.body.removeChild(iceOverlay);
     }
   }, 1500);
   
-  // Restore displays, remove glow, resume timer, and re-enable slicing after 5 seconds
+  // Restore everything and re-enable slicing after 5 seconds
   setTimeout(() => {
     scoreDisplay.style.opacity = '1';
     timerDisplay.style.opacity = '1';
@@ -346,9 +362,48 @@ function iceEffect() {
     highScoreDisplay.style.boxShadow = "";
     timerInterval = setInterval(updateTimer, 1000);
     isTimerPaused = false;
-    effectActive = false;  // Re-enable slicing after effect
+    effectActive = false;
   }, 5000);
 }
+// function iceEffect() {
+//     if (isTimerPaused) return;
+//     //effectActive = true;  // Disable slicing during ice effect
+//     isTimerPaused = true;
+//     clearInterval(timerInterval);
+  
+//     // Create a full-screen ice overlay
+//     const iceOverlay = document.createElement('div');
+//     iceOverlay.id = 'ice-overlay';
+//     iceOverlay.style.position = 'fixed';
+//     iceOverlay.style.top = '0';
+//     iceOverlay.style.left = '0';
+//     iceOverlay.style.width = '100%';
+//     iceOverlay.style.height = '100%';
+//     iceOverlay.style.backgroundColor = 'rgba(135, 206, 235, 0.5)'; // Light sky blue with transparency
+//     iceOverlay.style.zIndex = '9999';
+//     iceOverlay.style.display = 'flex';
+//     iceOverlay.style.justifyContent = 'center';
+//     iceOverlay.style.alignItems = 'center';
+//     iceOverlay.style.fontSize = '36px';
+//     iceOverlay.style.fontWeight = 'bold';
+//     iceOverlay.style.color = '#fff';
+//     iceOverlay.innerHTML = '❄️ Time Frozen! 🥶';
+//     document.body.appendChild(iceOverlay);
+  
+//     // Add the same shake animation as bomb effect
+//     canvas.classList.add('shake');
+  
+//     // Remove overlay and restore game state
+//     setTimeout(() => {
+//       if (document.body.contains(iceOverlay)) {
+//         document.body.removeChild(iceOverlay);
+//       }
+//       canvas.classList.remove('shake');
+//       timerInterval = setInterval(updateTimer, 1000);
+//       isTimerPaused = false;
+//       effectActive = false;
+//     }, 2000);
+//   }
 
 function bombEffect() {
   if (document.getElementById('bomb-overlay')) return;
@@ -376,13 +431,13 @@ function bombEffect() {
       document.body.removeChild(bombOverlay);
     }
     canvas.classList.remove('shake');
-    effectActive = false;  // Re-enable slicing after effect
+    effectActive = false;
   }, 2000);
 }
 
-/* ------------------------------
-// Main Game Functions
------------------------------- */
+/* =====================================================
+   Main Game Functions
+===================================================== */
 function spawnFruit() {
   if (!gameOver) {
     const fruitCounts = [6, 6, 6, 4];
@@ -475,8 +530,9 @@ function endGame() {
     localStorage.setItem('highScore', highScore);
     highScoreDisplay.innerHTML = `High: ${highScore}`;
   }
-  // Use a transaction to update the cumulative score in Realtime Database.
-  const scoreRef = ref(window.db, "gameScores/allGamesScore");
+  // Use a transaction to update this user's cumulative score in Realtime Database.
+  // The score for this user is stored under "gameScores/{playerId}"
+  const scoreRef = ref(window.db, "gameScores/" + playerId);
   runTransaction(scoreRef, (currentValue) => {
     if (currentValue === null) {
       return score;
@@ -485,7 +541,7 @@ function endGame() {
     }
   }).then((result) => {
     if (result.committed) {
-      console.log("Score updated successfully in Realtime Database:", result.snapshot.val());
+      console.log("Score updated successfully in Realtime Database for", playerId, ":", result.snapshot.val());
     } else {
       console.log("Score transaction not committed.");
     }
@@ -545,7 +601,7 @@ function handleSlice(points) {
         scorePopups.push(new ScorePopup(
           fruit.x + fruit.size / 2,
           fruit.y + fruit.size / 2 - 40,
-          'Time freezes! for 5 Seconds!',
+          '',
           '#00BFFF'
         ));
       } else if (fruit.emoji === '💣') {
@@ -643,3 +699,4 @@ document.getElementById('tryAgainBtn').addEventListener('click', () => {
   gameOverPopup.style.display = 'none';
   startGame();
 });
+
