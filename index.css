@@ -1,0 +1,283 @@
+/* ------------------------------
+   Global Variables & Reset
+------------------------------ */
+:root {
+    --tg-theme-bg-color: #E0F7FA;
+    --tg-theme-text-color: #000000;
+    --tg-theme-hint-color: #999999;
+    --tg-theme-link-color: #2481cc;
+    --tg-theme-button-color: #2481cc;
+    --tg-theme-button-text-color: #ffffff;
+  }
+  
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  html, body {
+    height: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--tg-theme-bg-color);
+    color: var(--tg-theme-text-color);
+    overflow: auto;
+  }
+  
+  /* ------------------------------
+     App & Game Container Styles
+  ------------------------------ */
+  #app-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overscroll-behavior: none;
+    touch-action: none;
+    background-color: #B2EBF2;
+  }
+  
+  .game-container {
+    touch-action: none;
+    overscroll-behavior: none;
+    background-color: #006064;
+  }
+  
+  #game-wrapper {
+    touch-action: none;
+    overscroll-behavior: none;
+    background-color: #00838F;
+    margin-top: 100px;
+  }
+  
+  /* ------------------------------
+     Sticky Header & Game UI
+  ------------------------------ */
+  .sticky-header {
+    position: sticky;
+    top: 0;
+    background-color: #4DD0E1;
+    padding: 20px;
+    z-index: 10;
+    border-radius: 10px;
+    text-align: center;
+  }
+  
+  .game-head {
+    text-align: center;
+    margin-bottom: 16px;
+    background-color: #00BCD4;
+    padding: 10px;
+    border-radius: 8px;
+  }
+  
+  h1 {
+    font-size: 24px;
+    color: var(--tg-theme-text-color);
+  }
+  
+  #gameUI {
+    display: flex;
+    justify-content: space-around;
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+    background-color: #0097A7;
+    padding: 12px 20px;
+    border-radius: 8px;
+    margin-top: 10px;
+  }
+  
+  #score {
+    text-align: left;
+  }
+  
+  #timer {
+    text-align: right;
+  }
+  
+  /* ------------------------------
+     Canvas Styles
+  ------------------------------ */
+  #gameCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+    background-color: #FFFFFF;
+    border-radius: 8px;
+    z-index: 1;
+  }
+  
+  /* ------------------------------
+     Popup Styles (HTML Markup)
+  ------------------------------ */
+  .popup-overlay {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 320px; /* Reduced max-width for a smaller, more responsive popup */
+    z-index: 10000;
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  /* Instructions Popup */
+  #instructions {
+    background: linear-gradient(120deg, rgba(41, 128, 185, 0.95), rgba(142, 68, 173, 0.95));
+    padding: 15px;  /* Reduced padding for a smaller popup */
+    border-radius: 16px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+  
+  #instructions .popup-header h2 {
+    color: #ffffff;
+    font-size: 24px; /* Slightly smaller header */
+    margin-bottom: 15px;
+    font-weight: 600;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  #instructions .popup-body {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    border-radius: 12px;
+    margin: 15px 0;
+  }
+  
+  #instructions .popup-body p {
+    color: #ffffff;
+    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: 12px;
+  }
+  
+  /* Game Over Popup */
+  #game-over-popup {
+    background: linear-gradient(135deg, rgba(231, 76, 60, 0.95), rgba(192, 57, 43, 0.95));
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  
+  #game-over-popup .popup-header h2 {
+    color: #ffffff;
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+  #game-over-popup .popup-body p {
+    color: #ffffff;
+    font-size: 20px;
+    line-height: 1.4;
+    margin: 15px 0;
+  }
+  
+  /* ------------------------------
+     Button Styles for Popups
+  ------------------------------ */
+  .game-button {
+    width: 100%;
+    padding: 14px 28px;
+    border: none;
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .game-button:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+  }
+  
+  .game-button:active {
+    transform: translateY(1px);
+  }
+  
+  /* ------------------------------
+     Additional Styles
+  ------------------------------ */
+  
+  /* Animation keyframes for popIn */
+  @keyframes popIn {
+    0% {
+      opacity: 0;
+      transform: translate(-50%, -40%) scale(0.8);
+    }
+    100% {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+  }
+  
+  /* Scoring Section */
+  .scoring-section h3 {
+    text-align: center;
+    margin-bottom: 15px;
+    color: var(--primary-dark);
+  }
+  
+  .score-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  
+  .score-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+  }
+  
+  .score-item span {
+    margin-left: 10px;
+    color: #ffffff;
+  }
+  
+  .popup-footer {
+    padding: 15px;
+    text-align: center;
+  }
+  
+  #startBtn {
+    width: 100%;
+    padding: 12px;
+    font-size: 18px;
+  }
+  
+  /* Responsive adjustments for smaller devices */
+  @media (max-width: 480px) {
+    #instructions {
+      padding: 10px;
+    }
+    #instructions .popup-header h2 {
+      font-size: 20px;
+    }
+    .game-button {
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+  }
+  
