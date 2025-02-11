@@ -318,7 +318,7 @@ function iceEffect() {
   iceOverlay.style.fontSize = '36px';
   iceOverlay.style.fontWeight = 'bold';
   iceOverlay.style.color = '#FF69B4';
-  iceOverlay.innerHTML = '⏸️ Timer frozen! Enjoy the frozen time! 😊';
+  iceOverlay.innerHTML = '';
   document.body.appendChild(iceOverlay);
   
   // Dim the score and timer displays
