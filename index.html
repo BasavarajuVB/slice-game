@@ -1,27 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Fruit Slasher</title>
-  <link rel="stylesheet" href="index.css" />
+  <link rel="stylesheet" href="css/code.css">
 </head>
 <body>
   <div id="app-container">
     <div class="game-container">
-      <div class="sticky-header">
-        <div class="game-head">
-          <h1 class="header">Fruit Slasher</h1>
-        </div>
-        <div id="gameUI">
-          <div id="score">Score: 0</div>
-          <div id="high_score">High: 0</div>
-          <div id="timer">Time: 60</div>
-        </div>
-      </div>
-      <div id="game-wrapper">
-        <canvas id="gameCanvas"></canvas>
-      </div>
+       <div class="sticky-header">
+          <div class="game-head">
+              <h1 class="header">Fruit Slasher</h1>
+          </div>
+          
+          <div id="gameUI">
+             <div id="score">Score: 0</div>
+             <div id="high_score">High: 0</div>
+             <div id="timer">Time: 60</div>
+          </div>
+       </div>
+       <div id="game-wrapper">
+          <canvas id="gameCanvas"></canvas>
+       </div>
     </div>
   </div>
 
@@ -68,29 +69,51 @@
     </div> 
   </div>
 
-  <!-- Firebase Initialization for Realtime Database -->
-  <script type="module">
-    // Import Firebase App and Realtime Database functions
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
-    import { getDatabase } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-database.js";
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script>
+        const tg = window.Telegram.WebApp;
+        tg.ready(() => {
+            console.log("Telegram WebApp is ready");
+        });
 
-    // Your web app's Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyBA6RaJk8CJbBXRQP5f08QFPhu8QB2LHw",
-      authDomain: "slicegame-f046e.firebaseapp.com",
-      projectId: "slicegame-f046e",
-      storageBucket: "slicegame-f046e.firebasestorage.app",
-      messagingSenderId: "532920314674",
-      appId: "1:532920314674:web:14b217a75eb8e4f9fd052b"
-    };
+        const canvas = document.getElementById('gameCanvas');
+        const container = canvas.parentElement;
 
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    // Expose the Realtime Database instance globally so index.js can use it.
-    window.db = db;
-  </script>
+        function resizeCanvas() {
+            const containerAspectRatio = container.clientWidth / container.clientHeight;
+            const gameAspectRatio = 800 / 1000; // From original game dimensions
 
-  <script type="module" src="index.js"></script>
+            if (containerAspectRatio > gameAspectRatio) {
+                canvas.style.width = 'auto';
+                canvas.style.height = '100%';
+            } else {
+                canvas.style.width = '100%';
+                canvas.style.height = 'auto';
+            }
+
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+        }
+
+        window.addEventListener('load', resizeCanvas);
+        window.addEventListener('resize', resizeCanvas);
+
+        // Prevent default touch behavior on the canvas
+         canvas.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+        }, false);
+
+        canvas.addEventListener('touchmove', function(e) {
+            e.preventDefault();
+        }, false);
+
+         canvas.addEventListener('touchend', function(e) {
+            e.preventDefault();
+        }, false);
+    </script>
+
+   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+   <script type="module" src="js/code.js"></script>
 </body>
 </html>
+
