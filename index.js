@@ -389,7 +389,7 @@ class FloatingText {
 }
 
 function handleSlice(points) {
-  if (gameOver || points.length < 2 || inputDisabled) return
+  if (gameOver || points.length < 2) return
   const x1 = points[points.length - 2].x
   const y1 = points[points.length - 2].y
   const x2 = points[points.length - 1].x
@@ -502,20 +502,17 @@ function iceEffect() {
   // Only pause timer, don't disable input
   clearInterval(timerInterval)
   
-  // Apply highlight effects to score displays
   scoreDisplay.style.transition = "box-shadow 0.5s ease"
   highScoreDisplay.style.transition = "box-shadow 0.5s ease"
   scoreDisplay.style.boxShadow = "0 0 20px 10px rgba(0, 191, 255, 0.8)"
   highScoreDisplay.style.boxShadow = "0 0 20px 10px rgba(0, 191, 255, 0.8)"
 
-  // Background color transition effect
   document.body.style.transition = "background-color 0.5s ease"
   document.body.style.backgroundColor = "#b3e5fc"
   setTimeout(() => {
     document.body.style.backgroundColor = "#E0F7FA"
   }, 1000)
 
-  // Show ice effect overlay
   const iceOverlay = document.createElement("div")
   iceOverlay.id = "ice-overlay"
   iceOverlay.style.position = "fixed"
@@ -534,19 +531,16 @@ function iceEffect() {
   iceOverlay.innerHTML = "❄️ Time Frozen! 🥶"
   document.body.appendChild(iceOverlay)
 
-  // Fade out overlay after 2 seconds
   setTimeout(() => {
     iceOverlay.style.opacity = "0"
   }, 2000)
 
-  // Remove overlay after fade out
   setTimeout(() => {
     if (document.body.contains(iceOverlay)) {
       document.body.removeChild(iceOverlay)
     }
   }, 4000)
 
-  // Remove score display highlights and resume timer after 5 seconds
   setTimeout(() => {
     scoreDisplay.style.boxShadow = "none"
     highScoreDisplay.style.boxShadow = "none"
